@@ -1,6 +1,6 @@
 body {
   margin: 0;
-  padding:0;
+  padding: 0;
   height: 100vh;
   display: flex;
   justify-content: center;
@@ -8,32 +8,31 @@ body {
 }
 
 .workspace {
-    display: flex;
-    padding: 20px;
+  display: flex;
+  padding: 20px;
 }
 
 #canvas {
-    height: 800px;
+  height: 800px;
 }
 
 .tools-sidebar {
-    height: 800px;
-    display: flex;
-    flex-direction: column;
-    gap: 2.5vh;
-    padding: 1.5vh;
-    background: #ffffff;
+  height: 800px;
+  display: flex;
+  flex-direction: column;
+  gap: 2.5vh;
+  padding: 1.5vh;
+  background: #ffffff;
 }
 
-.btn i{
+.btn i {
   font-size: 20px;
 }
 
-
 @media (max-width: 768px) {
-   body {
-    padding: 10px
-   }
+  body {
+    padding: 10px;
+  }
   .workspace {
     flex-direction: column;
     padding: 10px;
@@ -44,7 +43,7 @@ body {
     height: 15vh;
     flex-direction: row;
     flex-wrap: wrap;
-    justify-content:center;
+    justify-content: center;
   }
 
   #canvas {
@@ -56,7 +55,8 @@ body {
   }
 }
 
-.color-square,a.btn {
+.color-square,
+a.btn {
   width: 4.2vh;
   height: 4.2vh;
   border-radius: 12px;
@@ -65,19 +65,20 @@ body {
   transition: transform 0.1s ease;
 }
 
-a.btn{
+a.btn {
   display: inline-flex;
   justify-content: center;
 }
 
-.color-square:hover{
+.color-square:hover {
   transform: scale(1.1);
 }
 
 #custom-picker {
   overflow: hidden;
   cursor: pointer;
-  background: linear-gradient(120deg,
+  background: linear-gradient(
+    120deg,
     #ff6b6b,
     #feca57,
     #48dbfb,
@@ -88,10 +89,16 @@ a.btn{
   animation: move 5s ease infinite;
 }
 
-@keyframes move{
-  0%   { background-position: 0% 50%; }
-  50%  { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+@keyframes move {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 #custom-picker input {
