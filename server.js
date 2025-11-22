@@ -7,7 +7,7 @@ import fs from "fs";
 import admin from "firebase-admin";
 import dotenv from "dotenv";
 dotenv.config();
-
+import { Middleware } from "./middleware.js";
 const path = process.env.SERVICE_ACCOUNT_CREDS;
 
 const serviceAccountCreds = JSON.parse(fs.readFileSync(path, "utf8"));
@@ -17,16 +17,18 @@ admin.initializeApp({
 });
 
 const app = express();
-
-//To parse json files(middleware)
+const db = admin.firestore();
+//app.use(middleware)
 app.use(express.json());
+//.createServer() takes in request listener as an argument. app - the express object which is callable - has a signature of app(req,res) so it is a request listener.
+//server here is a raw node HTTP server.
 const server = http.createServer(app);
 const io = new Server(server);
 const redisClient = createClient();
 
 app.use(express.static("public"));
 
-app.post("/auth", async (req, res) => {
+app.post("/api/auth", async (req, res) => {
     const { idToken } = req.body;
 
     const decoded = await admin.auth().verifyIdToken(idToken);
@@ -40,6 +42,51 @@ app.post("/auth", async (req, res) => {
     );
 
     res.json({ token: jwtToken });
+});
+
+app.use(Middleware);
+
+app.post("/api/canvases", async (req, res) => {
+    try {
+        const name = req.body.name;
+        const userId = req.user.uid;
+
+        const canvasRef = await db
+            .collection("users")
+            .doc(userId)
+            .collection("canvases")
+            .add({
+                name,
+                createdAt: admin.firestore.FieldValue.serverTimestamp(),
+            });
+        const canvasDoc = await canvasRef.get();
+
+        res.status(201).json({
+            id: canvasRef.id,
+            ...canvasDoc.data(),
+        });
+    } catch (error) {
+        console.log("Error creating canvas:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
+
+app.get("/api/canvases", async (req, res) => {
+    const userId = req.user.uid;
+
+    const canvasesRef = await db
+        .collection("users")
+        .doc(userId)
+        .collection("canvases")
+        .orderBy("createdAt", "desc")
+        .get();
+
+    const result = canvasesRef.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+    }));
+
+    res.json(result);
 });
 
 redisClient.on("error", (err) => console.log("Redis couldn't connect", err));
