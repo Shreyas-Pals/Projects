@@ -1,7 +1,7 @@
 * {
   margin: 0;
   padding: 0;
-  font-family: "Segoe UI";
+  font-family: "sans-serif";
 }
 
 body,
@@ -104,4 +104,41 @@ button#newCanvasBtn:hover {
     font-size: 4vw;
     padding: 2vh 4vw;
   }
+}
+
+.custom-modal {
+  background: linear-gradient(to right, #ffffff, #6dd5fa, #2980b9);
+  border-radius: 15px;
+  box-shadow: 0 0.8vh 2vh rgba(0, 0, 0, 0.5);
+}
+
+.modal-content,
+.modal-body {
+  border: none;
+}
+
+.modal-body,
+.modal-footer {
+  background: black;
+  border: none;
+}
+
+.btn-light {
+  background: white;
+  color: black;
+  border: none;
+  border-radius: 8px;
+  padding: 0.8rem 1.6rem;
+  transition: 0.2s;
+}
+
+.btn-light:hover {
+  transform: translateY(-2px);
+}
+
+.btn-secondary {
+  border: none;
+  color: black;
+  border-radius: 8px;
+  padding: 0.8rem 1.6rem;
 }
