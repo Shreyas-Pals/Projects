@@ -8,8 +8,8 @@ body,
 html {
   width: 100%;
   min-height: 100%;
-  color: black;
-  background: black;
+  color: white;
+  background: rgb(33, 33, 33);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -17,8 +17,10 @@ html {
 }
 
 .container {
+  display: flex;
+  flex-direction: column;
   text-align: center;
-  background: linear-gradient(to right, #ffffff, #6dd5fa, #2980b9);
+  background: black;
   padding: 5vh 5vw;
   border-radius: 15px;
   box-shadow: 0 0.8vh 2vh rgba(0, 0, 0, 0.5);
@@ -28,7 +30,7 @@ html {
 }
 
 h1 {
-  color: black;
+  color: white;
   font-size: 4rem;
   margin-bottom: 2vh;
 }
@@ -46,14 +48,7 @@ button#newCanvasBtn {
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  transition:
-    transform 0.2s,
-    box-shadow 0.2s;
-}
-
-button#newCanvasBtn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  transition: transform 0.2s;
 }
 
 .canvas-list {
@@ -66,19 +61,20 @@ button#newCanvasBtn:hover {
 }
 
 .canvas-card {
+  color: black;
   background-color: white;
   padding: 2vh 3vw;
   border-radius: 10px;
-  box-shadow: 0 0.5vh 1.5vh rgba(0, 0, 0, 0.3);
   cursor: pointer;
   transition:
     transform 0.2s,
     box-shadow 0.2s;
 }
 
+#newCanvasBtn:hover,
 .canvas-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 1vh 2vh rgba(0, 0, 0, 0.4);
+  box-shadow: 0 1vh 2vh rgba(255, 255, 255, 0.3);
 }
 
 @media (max-width: 800px) {
@@ -106,7 +102,7 @@ button#newCanvasBtn:hover {
 }
 
 .custom-modal {
-  background: linear-gradient(to right, #ffffff, #6dd5fa, #2980b9);
+  background: black;
   border-radius: 15px;
   box-shadow: 0 0.8vh 2vh rgba(0, 0, 0, 0.5);
 }
@@ -144,4 +140,31 @@ button#newCanvasBtn:hover {
   color: black;
   border-radius: 8px;
   padding: 0.8rem 1.6rem;
+}
+
+.dashboard-nav {
+  display: flex;
+  justify-content: space-around;
+  border-top: 1px solid rgba(255, 255, 255, 0.6);
+  padding-top: 1.5vh;
+  margin-top: 3vh;
+}
+
+.nav-tab {
+  text-decoration: none;
+  padding: 1vh 1.5vw;
+  cursor: pointer;
+  transition: 0.2s;
+  color: white;
+  opacity: 0.7;
+}
+
+.nav-tab:hover {
+  opacity: 1;
+  transform: translateY(-2px);
+}
+
+.nav-tab.active {
+  font-weight: 600;
+  opacity: 1;
 }

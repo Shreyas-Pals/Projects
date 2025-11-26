@@ -48,19 +48,17 @@ app.use(Middleware);
 
 app.post("/api/canvases", async (req, res) => {
     try {
-        const { name, height, width } = req.body;
+        const { name, height, width, access } = req.body;
         const userId = req.user.uid;
 
-        const canvasRef = await db
-            .collection("users")
-            .doc(userId)
-            .collection("canvases")
-            .add({
-                name,
-                height,
-                width,
-                createdAt: admin.firestore.FieldValue.serverTimestamp(),
-            });
+        const canvasRef = await db.collection("canvases").add({
+            name,
+            width,
+            height,
+            access, // REQUIRED
+            owner: userId, // REQUIRED
+            createdAt: admin.firestore.FieldValue.serverTimestamp(),
+        });
         const canvasDoc = await canvasRef.get();
 
         res.status(201).json({
@@ -74,15 +72,19 @@ app.post("/api/canvases", async (req, res) => {
 });
 
 app.get("/api/canvases", async (req, res) => {
+    const access = req.query.access;
     const userId = req.user.uid;
 
-    const canvasesRef = await db
-        .collection("users")
-        .doc(userId)
-        .collection("canvases")
-        .orderBy("createdAt", "desc")
-        .get();
+    let db_query = db.collection("canvases");
 
+    if (access) {
+        if (access === "private") {
+            db_query = db_query.where("owner", "==", userId);
+        }
+        db_query = db_query.where("access", "==", access);
+    }
+
+    const canvasesRef = await db_query.get();
     const result = canvasesRef.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),

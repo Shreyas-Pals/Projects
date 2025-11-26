@@ -25,7 +25,6 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const newcanvasBtn = document.getElementById("newCanvasBtn");
 const token = localStorage.getItem("jwt_token");
-let tokenRefreshed = false;
 
 async function fetchCanvases() {
     try {
@@ -65,8 +64,6 @@ onIdTokenChanged(auth, async (user) => {
 
     const data = await res.json();
     localStorage.setItem("jwt_token", data.token);
-    tokenRefreshed = true;
-    console.log(tokenRefreshed);
     fetchCanvases();
 });
 
@@ -92,6 +89,7 @@ canvasForm.addEventListener("submit", async function (e) {
         const name = document.getElementById("canvasName").value;
         const width = document.getElementById("canvasWidth").value || 50;
         const height = document.getElementById("canvasHeight").value || 50;
+        const access = document.getElementById("canvasAccess").value;
 
         const response = await fetch("/api/canvases", {
             method: "POST",
@@ -99,7 +97,7 @@ canvasForm.addEventListener("submit", async function (e) {
                 "Content-Type": "application/json",
                 Authorization: `Bearer ${token}`,
             },
-            body: JSON.stringify({ name, height, width }),
+            body: JSON.stringify({ name, height, width, access }),
         });
 
         const data = await response.json();
