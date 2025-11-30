@@ -142,6 +142,10 @@ button#newCanvasBtn {
   padding: 0.8rem 1.6rem;
 }
 
+.btn-close {
+  filter: invert(1);
+}
+
 .dashboard-nav {
   display: flex;
   justify-content: space-around;

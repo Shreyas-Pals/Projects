@@ -2,6 +2,10 @@ body {
   margin: 0;
   padding: 0;
   height: 100vh;
+  overflow: hidden;
+}
+
+#flex {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -9,7 +13,6 @@ body {
 }
 
 .workspace {
-  display: flex;
   padding: 20px;
 }
 
@@ -19,7 +22,7 @@ body {
   height: auto;
 }
 .tools-sidebar {
-  background: linear-gradient(to top, #ffffff, #6dd5fa, #2980b9);
+  background: rgb(33, 33, 33);
   display: none;
   flex-direction: column;
   gap: 2.5vh;
@@ -76,6 +79,11 @@ a.btn {
   transform: scale(1.1);
 }
 
+.btn-light {
+  color: white;
+  background: none;
+}
+
 #custom-picker {
   overflow: hidden;
   cursor: pointer;
@@ -108,4 +116,71 @@ a.btn {
   height: 100%;
   opacity: 0;
   cursor: pointer;
+}
+
+#addPeopleBtn {
+  display: none;
+  background-color: white;
+  color: black;
+  font-size: 1rem;
+  padding: 1.5vh 3vw;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.2s;
+  margin-bottom: auto;
+  position: absolute;
+  top: 2.5vh;
+  right: 2vh;
+}
+
+#addPeopleBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 1vh 2vh rgba(255, 255, 255, 0.3);
+}
+
+#emailModal .modal-content {
+  color: white;
+  background: black;
+  border-radius: 15px;
+  box-shadow: 0 0.8vh 2vh rgba(0, 0, 0, 0.5);
+  border: none;
+}
+
+#emailModal .modal-header,
+#emailModal .modal-body,
+#emailModal .modal-footer {
+  background: black;
+  border: none;
+}
+
+#emailModal .btn-light {
+  background: white;
+  color: black;
+  border: none;
+  border-radius: 8px;
+  padding: 0.8rem 1.6rem;
+  transition: 0.2s;
+}
+
+#emailModal .btn-light:hover {
+  transform: translateY(-2px);
+}
+
+.btn-secondary {
+  border: none;
+  color: black;
+  border-radius: 8px;
+  padding: 0.8rem 1.6rem;
+}
+
+#emailList {
+  max-height: 200px;
+  overflow-y: auto;
+  border: 1px solid #333;
+  border-radius: 8px;
+}
+
+#emailModal .btn-close {
+  filter: invert(1);
 }

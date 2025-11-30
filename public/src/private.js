@@ -23,12 +23,14 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 
 const auth = getAuth(app);
-const newcanvasBtn = document.getElementById("newCanvasBtn");
 const token = localStorage.getItem("jwt_token");
+console.log("Hello");
+
+const canvasList = document.getElementById("canvasList");
 
 async function fetchCanvases() {
     try {
-        const response = await fetch("/api/canvases", {
+        const response = await fetch("/api/canvases/?access=private", {
             headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -65,56 +67,4 @@ onIdTokenChanged(auth, async (user) => {
     const data = await res.json();
     localStorage.setItem("jwt_token", data.token);
     fetchCanvases();
-});
-
-const canvasList = document.getElementById("canvasList");
-const canvasModal = new bootstrap.Modal(document.getElementById("canvasModal"));
-
-newcanvasBtn.addEventListener("click", () => {
-    canvasModal.show();
-});
-
-const canvasForm = document.getElementById("canvasForm");
-canvasForm.addEventListener("submit", async function (e) {
-    e.preventDefault();
-
-    if (!this.checkValidity()) {
-        this.classList.add("was-validated");
-        return;
-    }
-
-    document.getElementById("createBtn").disabled = true;
-
-    try {
-        const name = document.getElementById("canvasName").value;
-        const width = document.getElementById("canvasWidth").value || 50;
-        const height = document.getElementById("canvasHeight").value || 50;
-        const access = document.getElementById("canvasAccess").value;
-
-        const response = await fetch("/api/canvases", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify({ name, height, width, access }),
-        });
-
-        const data = await response.json();
-        console.log("Canvas created:", data);
-
-        const card = document.createElement("div");
-        card.className = "canvas-card";
-        card.innerHTML = `${data.name} <span style="font-size:10px; color:#555">${data.height}px * ${data.width}px</span>`;
-        canvasList.appendChild(card);
-
-        canvasModal.hide();
-        document.getElementById("createBtn").disabled = false;
-
-        card.addEventListener("click", () => {
-            window.location.href = `/canvas.html?id=${data.id}&height=${height}&width=${width}`;
-        });
-    } catch (err) {
-        console.error("Error creating a new canvas", err);
-    }
 });

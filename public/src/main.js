@@ -31,6 +31,17 @@ const provider = new GoogleAuthProvider();
 async function login() {
     const result = await signInWithPopup(auth, provider);
     const user = result.user;
+
+    if (
+        user.email.endsWith("@hyderabad.bits-pilani.ac.in") ||
+        user.email.endsWith("@pilani.bits-pilani.ac.in") ||
+        user.email.endsWith("@goa.bits-pilani.ac.in") ||
+        user.email.endsWith("@dubai.bits-pilani.ac.in")
+    ) {
+        auth.signOut();
+        alert("Use a BITS college email to login.");
+    }
+
     const idToken = await user.getIdToken();
 
     const response = await fetch("/api/auth", {

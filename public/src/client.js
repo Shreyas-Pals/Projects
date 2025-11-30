@@ -30,14 +30,61 @@ const sidebar = document.getElementById("sidebar");
 const ctx = canvas.getContext("2d");
 const params = new URLSearchParams(window.location.search);
 
-const canvasWidth = parseInt(params.get("width")); // fallback default
+const canvasWidth = parseInt(params.get("width"));
 const canvasHeight = parseInt(params.get("height"));
 const canvasId = params.get("id");
+const access = params.get("access");
+
 canvas.style.display = "block";
 sidebar.style.display = "flex";
 canvas.width = canvasWidth;
 canvas.height = canvasHeight;
 sidebar.height = canvasHeight;
+
+console.log(access);
+if (access === "private") {
+    const addPeopleBtn = document.getElementById("addPeopleBtn");
+    addPeopleBtn.style.display = "inline-block";
+    addPeopleBtn.addEventListener("click", () => {
+        const modal = new bootstrap.Modal(document.getElementById("emailModal"));
+        modal.show();
+    });
+
+    const addEmail = document.getElementById("addEmail");
+    const emailInput = document.getElementById("emailInput");
+    const email = emailInput.value.trim();
+
+    addEmail.addEventListener("click", () => {
+        const emailRegex =
+            /^[^@]+@(hyderabad|goa|pilani|dubai)\.bits-pilani\.ac\.in$/;
+
+        if (!emailRegex.test(email)) {
+            alert("Invalid Email. Emails must be from the BITS Pilani Domain.");
+            return;
+        }
+
+        if (!email) return;
+
+        const li = document.createElement("li");
+        li.className =
+            "list-group-item d-flex justify-content-between align-items-center";
+        li.innerHTML = `
+        ${email}
+        <button class="btn btn-sm btn-outline-danger removeBtn">Remove</button>
+    `;
+
+        document.getElementById("emailList").appendChild(li);
+
+        input.value = "";
+    });
+
+    document.addEventListener("click", (e) => {
+        if (e.target.classList.contains("removeBtn")) {
+            e.target.closest("li").remove();
+            emailInput.focus();
+        }
+    });
+}
 
 onIdTokenChanged(auth, (user) => {
     if (!user) {
