@@ -74,23 +74,63 @@ app.post("/api/canvases", async (req, res) => {
 app.get("/api/canvases", async (req, res) => {
     const access = req.query.access;
     const userId = req.user.uid;
-
+    const userEmail = req.user.email;
     let db_query = db.collection("canvases");
 
     if (access) {
         if (access === "private") {
             db_query = db_query.where("owner", "==", userId);
+        } else if (access === "shared") {
+            db_query = db_query.where("sharedWith", "array-contains", userEmail);
         }
+
         db_query = db_query.where("access", "==", access);
+        const canvasesRef = await db_query.get();
+        const result = canvasesRef.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+        }));
+
+        res.json(result);
+    });
+
+app.post("/api/:canvasId/emails", async (req, res) => {
+    try {
+        const { canvasId } = req.params;
+        const { email } = req.body;
+
+        const canvasRef = db.collection("canvases").doc(canvasId);
+
+        await canvasRef.update({
+            shareWith: admin.firestore.FieldValue.arrayUnion(email),
+        });
+
+        const updatedDoc = await canvasRef.get();
+        const updated = updatedDoc.data();
+
+        res.json({
+            shareWith: updated.shareWith,
+        });
+    } catch (err) {
+        console.error("POST email error:", err);
+        res.status(500).send("Server error");
     }
+});
 
-    const canvasesRef = await db_query.get();
-    const result = canvasesRef.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-    }));
+app.get("/api/:canvasId/emails", async (req, res) => {
+    try {
+        const { canvasId } = req.params;
 
-    res.json(result);
+        const canvasRef = db.collection("canvases").doc(canvasId);
+        const doc = await canvasRef.get();
+
+        res.json({
+            shareWith: doc.data().shareWith,
+        });
+    } catch (err) {
+        console.error("GET emails error:", err);
+        res.status(500).send("Server error");
+    }
 });
 
 redisClient.on("error", (err) => console.log("Redis couldn't connect", err));

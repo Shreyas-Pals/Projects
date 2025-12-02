@@ -24,6 +24,7 @@ const app = initializeApp(firebaseConfig);
 
 const auth = getAuth(app);
 
+const token = localStorage.getItem("jwt_token");
 const canvas = document.getElementById("canvas");
 const sidebar = document.getElementById("sidebar");
 const ctx = canvas.getContext("2d");
@@ -39,51 +40,6 @@ sidebar.style.display = "flex";
 canvas.width = canvasWidth;
 canvas.height = canvasHeight;
 sidebar.height = canvasHeight;
-
-// console.log(access);
-if (access === "private") {
-    const addPeopleBtn = document.getElementById("addPeopleBtn");
-    addPeopleBtn.style.display = "inline-block";
-    addPeopleBtn.addEventListener("click", () => {
-        const modal = new bootstrap.Modal(document.getElementById("emailModal"));
-        modal.show();
-    });
-
-    const addEmail = document.getElementById("addEmail");
-    const emailInput = document.getElementById("emailInput");
-    const email = emailInput.value.trim();
-
-    addEmail.addEventListener("click", () => {
-        const emailRegex =
-            /^[^@]+@(hyderabad|goa|pilani|dubai)\.bits-pilani\.ac\.in$/;
-
-        if (!emailRegex.test(email)) {
-            alert("Invalid Email. Emails must be from the BITS Pilani Domain.");
-            return;
-        }
-
-        if (!email) return;
-
-        const li = document.createElement("li");
-        li.className =
-            "list-group-item d-flex justify-content-between align-items-center";
-        li.innerHTML = `
-        ${email}
-        <button class="btn btn-sm btn-outline-danger removeBtn">Remove</button>
-    `;
-
-        document.getElementById("emailList").appendChild(li);
-
-        input.value = "";
-    });
-
-    document.addEventListener("click", (e) => {
-        if (e.target.classList.contains("removeBtn")) {
-            e.target.closest("li").remove();
-            emailInput.focus();
-        }
-    });
-}
 
 let strokeWidth = 5;
 
@@ -183,3 +139,100 @@ const home = document.getElementById("home");
 home.addEventListener("click", () => {
     window.location.href = "/dashboard.html";
 });
+
+// console.log(access);
+if (access === "private") {
+    const addPeopleBtn = document.getElementById("addPeopleBtn");
+    addPeopleBtn.style.display = "inline-block";
+    addPeopleBtn.addEventListener("click", () => {
+        const modal = new bootstrap.Modal(document.getElementById("emailModal"));
+        modal.show();
+    });
+
+    const addEmail = document.getElementById("addEmail");
+
+    const emailList = document.getElementById("emailList");
+    async function loadEmailList() {
+        try {
+            const response = await fetch(`/api/${canvasId}/emails`, {
+                method: "GET",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            const data = await response.json();
+
+            emailList.innerHTML = "";
+
+            (data.shareWith || []).forEach((email) => {
+                const li = document.createElement("li");
+                li.className =
+                    "list-group-item d-flex justify-content-between align-items-center";
+                li.innerHTML = `
+                ${email}
+                <button class="btn btn-sm btn-outline-danger removeBtn">Remove</button>
+            `;
+                emailList.appendChild(li);
+            });
+        } catch (err) {
+            console.error("Error loading email list:", err);
+        }
+    }
+
+    loadEmailList();
+
+    addEmail.addEventListener("click", async () => {
+        const emailInput = document.getElementById("emailInput");
+        const email = emailInput.value.trim();
+
+        const emailRegex =
+            /^[^@]+@(hyderabad|goa|pilani|dubai)\.bits-pilani\.ac\.in$/;
+
+        if (!emailRegex.test(email)) {
+            alert("Invalid Email. Emails must be from the BITS Pilani Domain.");
+            return;
+        }
+
+        const existingEmails = Array.from(emailList.querySelectorAll("li")).map(
+            (li) => li.textContent.trim().split("\n")[0],
+        );
+
+        if (existingEmails.includes(email)) {
+            alert("This email is already added!");
+            return;
+        }
+
+        if (!email) return;
+
+        const li = document.createElement("li");
+        li.className =
+            "list-group-item d-flex justify-content-between align-items-center";
+        li.innerHTML = `
+        ${email}
+        <button class="btn btn-sm btn-outline-danger removeBtn">Remove</button>
+    `;
+
+        document.getElementById("emailList").appendChild(li);
+
+        emailInput.value = "";
+
+        const response = await fetch(`/api/${canvasId}/emails`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ email }),
+        });
+
+        const data = await response.json();
+    });
+
+    document.addEventListener("click", (e) => {
+        if (e.target.classList.contains("removeBtn")) {
+            e.target.closest("li").remove();
+            emailInput.focus();
+        }
+    });
+}
