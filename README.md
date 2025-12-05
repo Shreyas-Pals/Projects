@@ -40,14 +40,20 @@ A **real-time collaborative drawing canvas** where multiple users can draw, eras
    git clone <repo-url>
    cd CANVuS
    ```
+2. Switch to stable branch:
+The main branch contains experimental code (might have bugs/ broken)
 
-2. Install dependencies:
+   ```bash
+   git checkout stable
+   ```
+   
+3. Install dependencies:
 
    ```bash
    npm install
    ```
 
-3. Configure environment variables in `.env`:
+4. Configure environment variables in `.env`:
 
    ```env
    JWT_SECRET=<your-jwt-secret>
@@ -59,13 +65,13 @@ A **real-time collaborative drawing canvas** where multiple users can draw, eras
    ```bash
    node crypt.js
     ```
-4. Start the server:
+5. Start the server:
 
    ```bash
    node server.js
    ```
 
-5. Open the front-end in your browser to access the canvas.
+6. Open the front-end in your browser to access the canvas.
 
 ### Set up Firebase project
 
